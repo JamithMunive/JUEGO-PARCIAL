@@ -1,0 +1,169 @@
+class Personaje:
+
+    def __init__(self, nombre, vida, ataque, defensa):
+        self.__nombre = nombre
+        self.__vida = vida
+        self.__ataque = ataque
+        self.__defensa = defensa
+
+    def get_nombre(self):
+        return self.__nombre
+
+    def get_vida(self):
+        return self.__vida
+
+    def get_ataque(self):
+        return self.__ataque
+
+    def get_defensa(self):
+        return self.__defensa
+
+    def recibir_danio(self, danio):
+
+        vida_restante = self.__vida - danio
+
+        if vida_restante < 0:
+            vida_restante = 0
+
+        self.__vida = vida_restante
+
+    def esta_vivo(self):
+        return self.__vida > 0
+
+
+
+class GuerreroLegendario(Personaje):
+
+    def atacar(self, objetivo):
+
+        danio = (self.get_ataque() * 2) - objetivo.get_defensa()
+
+        if danio < 0:
+            danio = 0
+
+        objetivo.recibir_danio(danio)
+
+        print("\n", self.get_nombre(),
+              "usó CORTE DEL DRAGÓN e hizo",
+              danio, "de daño")
+
+
+class HechiceroOscuro(Personaje):
+
+    def atacar(self, objetivo):
+
+        danio = self.get_ataque() + 20
+
+        objetivo.recibir_danio(danio)
+
+        print("\n", self.get_nombre(),
+              "lanzó TORMENTA INFERNAL e hizo",
+              danio, "de daño")
+
+
+
+class AsesinoSombrio(Personaje):
+
+    def atacar(self, objetivo):
+
+        danio = self.get_ataque() * 3
+
+        objetivo.recibir_danio(danio)
+
+        print("\n", self.get_nombre(),
+              "usó GOLPE FANTASMA e hizo",
+              danio, "de daño")
+
+
+# ================= BATALLA =================
+
+class Batalla:
+
+    def __init__(self, p1, p2):
+        self.p1 = p1
+        self.p2 = p2
+
+    def iniciar(self):
+
+        turno = 1
+
+        while self.p1.esta_vivo() and self.p2.esta_vivo():
+
+            print("\n==============================")
+            print(" TURNO", turno)
+            print("==============================")
+
+            input("\nENTER para atacar")
+
+            self.p1.atacar(self.p2)
+
+            print(self.p2.get_nombre(),
+                  "tiene",
+                  self.p2.get_vida(),
+                  "HP")
+
+            if not self.p2.esta_vivo():
+                break
+
+            input("\nENTER para continuar")
+
+            self.p2.atacar(self.p1)
+
+            print(self.p1.get_nombre(),
+                  "tiene",
+                  self.p1.get_vida(),
+                  "HP")
+
+            turno += 1
+
+        print("\n FIN DE LA BATALLA")
+
+        if self.p1.esta_vivo():
+            print("GANADOR:", self.p1.get_nombre())
+        else:
+            print("GANADOR:", self.p2.get_nombre())
+
+
+print("LEGENDS OF ETERNITY ")
+
+print("\nJugador 1")
+nombre1 = input("Nombre: ")
+
+print("\n1. Guerrero Legendario")
+print("2. Hechicero Oscuro")
+print("3. Asesino Sombrío")
+
+op1 = input("Escoge una clase: ")
+
+if op1 == "1":
+    jugador1 = GuerreroLegendario(nombre1, 120, 35, 15)
+
+elif op1 == "2":
+    jugador1 = HechiceroOscuro(nombre1, 90, 40, 10)
+
+else:
+    jugador1 = AsesinoSombrio(nombre1, 80, 30, 5)
+
+
+print("\nJugador 2")
+nombre2 = input("Nombre: ")
+
+print("\n1. Guerrero Legendario")
+print("2. Hechicero Oscuro")
+print("3. Asesino Sombrío")
+
+op2 = input("Escoge una clase: ")
+
+if op2 == "1":
+    jugador2 = GuerreroLegendario(nombre2, 120, 35, 15)
+
+elif op2 == "2":
+    jugador2 = HechiceroOscuro(nombre2, 90, 40, 10)
+
+else:
+    jugador2 = AsesinoSombrio(nombre2, 80, 30, 5)
+
+
+
+juego = Batalla(jugador1, jugador2)
+juego.iniciar()
